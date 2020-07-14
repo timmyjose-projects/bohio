@@ -1,4 +1,4 @@
-# Bohio
+# bohio
 
 `bohio` refers to a house/roundhouse in the [Taino language](https://en.wikipedia.org/wiki/Ta%C3%ADno_language). 
 
