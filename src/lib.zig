@@ -4,7 +4,7 @@ const fs = std.fs;
 const Allocator = std.mem.Allocator;
 const builtin = @import("builtin");
 const posix = @import("./os/posix.zig");
-const windows = @import("./ps/windows.zig");
+const windows = @import("./os/windows.zig");
 
 pub const BohioError = error{
     CouldNotGetCurrentWorkingDirectory,
