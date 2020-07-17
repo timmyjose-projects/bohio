@@ -1,4 +1,5 @@
 const std = @import("std");
+const process = std.process;
 const os = std.os;
 const fs = std.fs;
 const Allocator = std.mem.Allocator;
@@ -27,10 +28,10 @@ pub const BohioError = error{
 ///
 ///  BohioError
 ///
-pub fn homeDir() ?[]const u8 {
+pub fn homeDir(allocator: *Allocator) ?[]const u8 {
     switch (builtin.os.tag) {
-        .windows => return windows.homeDir() catch null,
-        else => return posix.homeDir() catch null,
+        .windows => return windows.homeDir(allocator) catch null,
+        else => return posix.homeDir(allocator) catch null,
     }
 }
 
@@ -56,7 +57,13 @@ pub fn clutchHome(allocator: *Allocator) ?[]const u8 {
 }
 
 test "homeDir()" {
-    std.debug.print("Home directory = {}\n", .{homeDir()});
+    var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
+    defer arena.deinit();
+    var allocator = &arena.allocator;
+
+    const home = homeDir(allocator) orelse "N/A";
+    defer allocator.free(home);
+    std.debug.print("Home directory = {}\n", .{home});
 }
 
 test "clutchHome()" {
@@ -64,5 +71,7 @@ test "clutchHome()" {
     defer arena.deinit();
     var allocator = &arena.allocator;
 
-    std.debug.print("Clutch Home directory = {}\n", .{clutchHome(allocator)});
+    const clutch_home = clutchHome(allocator) orelse "N/A";
+    defer allocator.free(clutch_home);
+    std.debug.print("Clutch Home directory = {}\n", .{clutch_home});
 }
